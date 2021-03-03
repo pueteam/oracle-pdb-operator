@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-The oracle-db-operator implements a kubernetes native approach for lifecycle management of Oracle pluggable databases(PDB) inside of a Oracle container (multitenant) database(CDB), based on kubernetes operator and custom ressource definitions (CRD). It enables seamless integration of DevOps pipelines for microservices using Oralce polyglot databases, with Oracle autonomous database technology
+The oracle-db-operator implements a kubernetes native approach for lifecycle management of Oracle pluggable databases(PDB) inside of a Oracle container (multitenant) database(CDB), based on kubernetes operator and custom ressource definitions (CRD). It enables seamless integration of DevOps pipelines for microservices using Oracle polyglot databases, with Oracle autonomous database technology
 
 ## Architecture
 
@@ -22,9 +22,9 @@ The following describes an example deployment of Scenario 1 above in the Oracle 
 
 ## Required Docker images
 
-## Oracle Database
+### Oracle Database
 
-Build a docker image as described in https://github.com/oracle/docker-images/blob/master/OracleDatabase/SingleInstance/README.md. After cloning the git repository, download the database binaries in the version you need from [Oracle Technology Network](http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html), put them in the dockerfiles/version folder, go in the dockerfiles direct0ry and execute e.g.:
+Build a docker image as described in <https://github.com/oracle/docker-images/blob/master/OracleDatabase/SingleInstance/README.md>. After cloning the git repository, download the database binaries in the version you need from [Oracle Technology Network](http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html), put them in the dockerfiles/version folder, go in the dockerfiles direct0ry and execute e.g.:
 
 ```bash
 ./buildDockerImage.sh -e -v 19.3.0
@@ -40,7 +40,7 @@ docker tag oracle/database:19.3.0-ee harbor.pue.es/oraclepdo/oracle/database:19.
 docker push harbor.pue.es/oraclepdo/oracle/database:19.3.0-ee
 ```
 
-## Oracle Rest Data Services (ORDS)
+### Oracle Rest Data Services (ORDS)
 
 Build a docker image as described in <https://github.com/oracle/docker-images/tree/master/OracleRestDataServices>. The Dockerfile for ORDS depends on an Oracle Java 8 docker image, which should be build first. This can be avoided if following statement in the Dockerfile
 
@@ -70,7 +70,7 @@ docker tag oracle/restdataservices:20.2.1 harbor.pue.es/oraclepdo/oracle/restdat
 docker push harbor.pue.es/oraclepdo/oracle/restdataservices:20.2.1
 ```
 
-## Oracle Database Operator
+### Oracle Database Operator
 
 The image can be downloaded from:
 
