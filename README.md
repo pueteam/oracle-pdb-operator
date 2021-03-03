@@ -194,6 +194,12 @@ kubectl exec -it $(kubectl get pod -l app=oracle-db-ords --output=jsonpath={.ite
 kubectl delete pod $(kubectl get pod -l app=oracle-db-ords --output=jsonpath={.items..metadata.name})
 ```
 
+Deploy the operator CRD:
+
+```bash
+kubectl apply -f manifest/oracle.pue.es_pdbs.yaml
+```
+
 Deploy Oracle database operator:
 
 ```bash
