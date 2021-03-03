@@ -1,0 +1,43 @@
+{
+  "name": "oracle-pdb-operator",
+  "version": "1.0.0",
+  "description": "Oracle PDB operator for Kubernetes",
+  "main": "src/index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "tsc && node dist/index.js",
+    "devel": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pueteam/oracle-pdb-operator.git"
+  },
+  "keywords": [
+    "Oracle",
+    "PDB",
+    "Kubernetes",
+    "Operator"
+  ],
+  "author": "Sergio <sergio@ishtar.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pueteam/oracle-pdb-operator/issues"
+  },
+  "homepage": "https://github.com/pueteam/oracle-pdb-operator#readme",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.7",
+    "ts-node-dev": "^1.1.1"
+  },
+  "dependencies": {
+    "@dot-i/k8s-operator": "^1.1.1",
+    "@kubernetes/client-node": "^0.14.0",
+    "axios": "^0.21.1",
+    "bunyan": "^1.8.15",
+    "typescript": "^4.2.2"
+  }
+}

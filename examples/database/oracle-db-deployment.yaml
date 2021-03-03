@@ -1,0 +1,70 @@
+
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: oracle-db
+  namespace: oracle
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  selector:
+    matchLabels:
+      app: oracle-db
+  template:
+    metadata:
+      labels:
+        app: oracle-db
+    spec:
+      hostname: oracle-db
+      containers:      
+      - name: oracle-db
+        image: harbor.pue.es/oraclepdo/oracle/database:19.3.0-ee
+        env:
+        - name: ORACLE_SID
+          value: "ORCLCDB"
+        - name: ORACLE_PDB
+          value: "ORCLPDB1"
+        - name: ORACLE_PWD
+          value: "PDos00###"
+        volumeMounts:
+        - name: oracle-db-config
+          mountPath: /opt/oracle/scripts/setup
+        - name: oracle-db-data
+          mountPath: /opt/oracle/oradata
+        ports:
+        - containerPort: 1521
+        livenessProbe:
+          tcpSocket:
+            port: 1521
+          initialDelaySeconds: 300
+          periodSeconds: 30
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: oracle-db-config
+          configMap:
+            name: oracle-db-config
+        - name: oracle-db-data
+          persistentVolumeClaim:
+            claimName: oracle-db-data
+      initContainers:
+        - name: chown-oradata
+          command: ["sh", "-c", "chown -R 54321:54321 /opt/oracle/oradata"]
+          image: busybox
+          volumeMounts:
+            - name: oracle-db-data
+              mountPath: /opt/oracle/oradata
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-db-service
+  namespace: oracle
+spec:
+  ports:
+  - port: 1521
+    targetPort: 1521
+    protocol: TCP
+  selector:
+    app: oracle-db

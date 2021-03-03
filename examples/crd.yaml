@@ -1,0 +1,8 @@
+apiVersion: oracle.pue.es/v1alpha1
+kind: pdb
+metadata:
+  name: mypdb
+  namespace: oracle
+spec:
+  storage: 1000000000
+  tempStorage: 10000000

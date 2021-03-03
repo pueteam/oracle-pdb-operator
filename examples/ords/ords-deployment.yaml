@@ -1,0 +1,73 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: oracle-db-ords
+  namespace: oracle
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  selector:
+    matchLabels:
+      app: oracle-db-ords
+  template:
+    metadata:
+      labels:
+        app: oracle-db-ords
+    spec:
+      containers:
+        - name: oracle-db-ords
+          image: harbor.pue.es/oraclepdo/oracle/restdataservices:20.2.1
+          ports:
+            - containerPort: 8888
+          livenessProbe:
+            tcpSocket:
+              port: 8888
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          env:
+            - name: ORACLE_HOST
+              value: oracle-db-service
+            - name: ORACLE_SERVICE
+              value: ORCLCDB
+            - name: ORACLE_PWD
+              value: PDos00###
+            - name: ORDS_PWD
+              value: PDos00###
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: oracle-db-ords-config-persistent
+              mountPath: "/opt/oracle/ords/config/ords"
+
+      initContainers:
+        - name: setup-configs
+          command: ["sh", "-c", "if test -f /opt/oracle/ords/config/ords/credentials; then echo ords already initialized...; else cp /conf/* /opt/oracle/ords/config/ords; chmod +x /opt/oracle/ords/config/ords/*.sh; chown -R 54321:54321 /opt/oracle/ords/config/ords; fi"]
+          image: busybox
+          volumeMounts:
+            - name: oracle-db-ords-config
+              mountPath: "/conf"
+            - name: oracle-db-ords-config-persistent
+              mountPath: "/opt/oracle/ords/config/ords"
+      imagePullSecrets:
+        - name: regcred
+
+      volumes:
+        - name: oracle-db-ords-config
+          configMap:
+            name: oracle-db-ords-config
+        - name: oracle-db-ords-config-persistent
+          persistentVolumeClaim:
+            claimName: oracle-db-ords
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-db-ords-service
+  namespace: oracle
+spec:
+  ports:
+    - port: 8888
+      targetPort: 8888
+      protocol: TCP
+  selector:
+    app: oracle-db-ords
