@@ -40,7 +40,7 @@ spec:
       serviceAccountName: oracle-db-operator
       containers:
       - name: oracle-pdb-operator
-        image: harbor.pue.es/oraclepdo/pueteam/oracle-pdb-operator:0.0.2
+        image: harbor.pue.es/oraclepdo/pueteam/oracle-pdb-operator:0.0.3
         resources:
           requests:
             memory: "128Mi"
