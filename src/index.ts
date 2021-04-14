@@ -24,7 +24,7 @@ const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 
 export default class PDBOperator extends Operator {
     protected async init() {
-        const crdFile = Path.resolve(__dirname, '..', 'oracle.pue.es_pdbs.yaml');
+        const crdFile = Path.resolve(__dirname, '../manifest', 'oracle.pue.es_pdbs.yaml');
         console.log(crdFile);
         const { group, versions, plural } = await this.registerCustomResourceDefinition(crdFile);
         await this.watchResource(group, versions[0].name, plural, async (e) => {
