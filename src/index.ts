@@ -1,4 +1,5 @@
 import Operator, { ResourceEventType, ResourceEvent } from '@dot-i/k8s-operator';
+const https = require('https');
 const bunyan = require('bunyan');
 const Path = require('path');
 const axios = require('axios');
@@ -21,6 +22,8 @@ const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
 
 const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 export default class PDBOperator extends Operator {
     protected async init() {
@@ -91,6 +94,9 @@ export default class PDBOperator extends Operator {
               'Content-Type': 'application/json; charset=utf-8', 
               'Authorization': `Basic ${auth}`,
             },
+            httpsAgent: new https.Agent({  
+               rejectUnauthorized: false
+            }),
             data : data
         };
         logger.info(config);
