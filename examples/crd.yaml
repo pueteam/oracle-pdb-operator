@@ -6,3 +6,6 @@ metadata:
 spec:
   storage: 1000000000
   tempStorage: 10000000
+  adminName: pdbadmin
+  adminPwd: W3lc0m31
+
