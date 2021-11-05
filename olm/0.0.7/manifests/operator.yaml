@@ -1,0 +1,73 @@
+# for creating these resources it requires the user to be logged in as system admin
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: oracle-db-operator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: oracle-db-operator
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: ""
+subjects:
+  - kind: ServiceAccount
+    name: oracle-db-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle-db-operator
+  labels: &default-labels
+    app.kubernetes.io/name: oracle-db-operator
+    app.kubernetes.io/version: v0.0.1-v1alpha1
+spec:
+  replicas: 1
+  selector:
+    matchLabels: *default-labels
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: *default-labels
+    spec:
+      serviceAccountName: oracle-db-operator
+      containers:
+      - name: oracle-pdb-operator
+        image: harbor.pue.es/oraclepdo/pueteam/oracle-pdb-operator:0.0.7
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "300m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: CRD
+          value: "true"
+        - name: ORDS_HOST
+          value: "oracle-db-ords-service"
+        - name: ORDS_PORT
+          value: "8888"
+        - name: ORDS_PROTOCOL
+          value: "http"
+        - name: ORDS_USER
+          valueFrom:
+            secretKeyRef:
+              name: oracle-db-ords-credentials
+              key: username
+        - name: ORDS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: oracle-db-ords-credentials
+              key: password
+        - name: ORDS_CREDENTIAL_SECRET_NAME
+          value: "oracle-db-ords-credentials"
+        - name: DB_FILENAME_CONVERSION_PATTERN
+          value: "('/opt/oracle/oradata/ORCLCDB/pdbseed/','/opt/oracle/oradata/ORCLCDB/##PDBNAME##/')"
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+
